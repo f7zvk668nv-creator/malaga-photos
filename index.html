@@ -82,18 +82,31 @@
     padding: 2.5rem 3rem 5rem;
   }
 
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 2rem;
+  .gallery {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
   }
 
+  .photo-row {
+    display: grid;
+    gap: 1.5rem;
+  }
+
+  .photo-row.row-big-small   { grid-template-columns: 2fr 1fr; }
+  .photo-row.row-small-big   { grid-template-columns: 1fr 2fr; }
+  .photo-row.row-full        { grid-template-columns: 1fr; }
+  .photo-row.row-thirds      { grid-template-columns: 1fr 1fr 1fr; }
+  .photo-row.row-equal       { grid-template-columns: 1fr 1fr; }
+
   @media (max-width: 900px) {
-    .grid { grid-template-columns: 1fr; }
+    .photo-row { grid-template-columns: 1fr 1fr !important; }
+    .photo-row.row-full { grid-template-columns: 1fr !important; }
     header { padding: 3rem 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
     main { padding: 2rem 2rem 4rem; }
   }
   @media (max-width: 560px) {
+    .photo-row { grid-template-columns: 1fr !important; }
     header { padding: 2rem 1.25rem 1.25rem; }
     main { padding: 1.5rem 1.25rem 3rem; }
     h1 { font-size: 2rem; }
@@ -251,7 +264,7 @@
 </header>
 
 <main>
-  <div class="grid" id="gallery">
+  <div class="gallery" id="gallery">
     <div class="photo-item" data-caption="R0004896">
       <img src="R0004896.JPG" alt="R0004896" loading="lazy">
       <div class="caption">R0004896</div>
@@ -717,7 +730,7 @@
       <div class="caption">R0005190</div>
     </div>
 
-    </div>
+  </div>
 </main>
 
 <footer>
@@ -736,7 +749,44 @@
 </div>
 
 <script>
-  const items = Array.from(document.querySelectorAll('.photo-item'));
+  const rowPatterns = [
+    { cls: 'row-big-small',  count: 2 },
+    { cls: 'row-thirds',     count: 3 },
+    { cls: 'row-small-big',  count: 2 },
+    { cls: 'row-full',       count: 1 },
+    { cls: 'row-equal',      count: 2 },
+    { cls: 'row-thirds',     count: 3 },
+    { cls: 'row-big-small',  count: 2 },
+    { cls: 'row-small-big',  count: 2 },
+    { cls: 'row-full',       count: 1 },
+    { cls: 'row-equal',      count: 2 },
+  ];
+
+  const gallery = document.getElementById('gallery');
+  const allItems = Array.from(gallery.querySelectorAll('.photo-item'));
+
+  gallery.innerHTML = '';
+
+  let idx = 0;
+  let patternIdx = 0;
+  const orderedItems = [];
+
+  while (idx < allItems.length) {
+    const pattern = rowPatterns[patternIdx % rowPatterns.length];
+    const row = document.createElement('div');
+    row.className = 'photo-row ' + pattern.cls;
+    const take = Math.min(pattern.count, allItems.length - idx);
+    for (let i = 0; i < take; i++) {
+      const item = allItems[idx];
+      orderedItems.push(item);
+      row.appendChild(item);
+      idx++;
+    }
+    gallery.appendChild(row);
+    patternIdx++;
+  }
+
+  const items = orderedItems;
   const lb = document.getElementById('lightbox');
   const lbImg = document.getElementById('lightbox-img');
   const lbCap = document.getElementById('lightbox-caption');
