@@ -749,16 +749,19 @@
 </div>
 
 <script>
+  const featured = new Set([
+    'R0004896','R0004915','R0004927','R0004935','R0004948',
+    'R0004963','R0005081','R0005117','R0005122','R0005190'
+  ]);
+
   const rowPatterns = [
     { cls: 'row-big-small',  count: 2 },
     { cls: 'row-thirds',     count: 3 },
     { cls: 'row-small-big',  count: 2 },
-    { cls: 'row-full',       count: 1 },
     { cls: 'row-equal',      count: 2 },
     { cls: 'row-thirds',     count: 3 },
     { cls: 'row-big-small',  count: 2 },
     { cls: 'row-small-big',  count: 2 },
-    { cls: 'row-full',       count: 1 },
     { cls: 'row-equal',      count: 2 },
   ];
 
@@ -772,18 +775,35 @@
   const orderedItems = [];
 
   while (idx < allItems.length) {
-    const pattern = rowPatterns[patternIdx % rowPatterns.length];
-    const row = document.createElement('div');
-    row.className = 'photo-row ' + pattern.cls;
-    const take = Math.min(pattern.count, allItems.length - idx);
-    for (let i = 0; i < take; i++) {
-      const item = allItems[idx];
+    const item = allItems[idx];
+    const caption = item.dataset.caption;
+
+    if (featured.has(caption)) {
+      const row = document.createElement('div');
+      row.className = 'photo-row row-full';
       orderedItems.push(item);
       row.appendChild(item);
+      gallery.appendChild(row);
       idx++;
+    } else {
+      const pattern = rowPatterns[patternIdx % rowPatterns.length];
+      const row = document.createElement('div');
+      row.className = 'photo-row ' + pattern.cls;
+      const take = Math.min(pattern.count, allItems.length - idx);
+      let added = 0;
+      for (let i = 0; i < take; i++) {
+        if (idx >= allItems.length) break;
+        const next = allItems[idx];
+        if (featured.has(next.dataset.caption) && added > 0) break;
+        orderedItems.push(next);
+        row.appendChild(next);
+        idx++;
+        added++;
+        if (featured.has(next.dataset.caption)) break;
+      }
+      gallery.appendChild(row);
+      patternIdx++;
     }
-    gallery.appendChild(row);
-    patternIdx++;
   }
 
   const items = orderedItems;
