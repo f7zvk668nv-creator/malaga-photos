@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>a butter week in spain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Archivo+Narrow:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #6b7c5c;
+    --green-light: #8a9e78;
+    --green-pale: #e8ede3;
+    --off-white: #f7f5f0;
+    --ink: #1a1a18;
+    --ink-muted: #5a5a52;
+    --serif: 'EB Garamond', Georgia, serif;
+    --sans: 'Archivo Narrow', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--off-white);
+    color: var(--ink);
+    font-family: var(--serif);
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  header {
+    padding: 4rem 3rem 2rem;
+    border-bottom: 1px solid var(--green);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+  }
+
+  .header-left {
+    flex: 1;
+  }
+
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--green);
+    margin-bottom: 0.75rem;
+  }
+
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--green);
+  }
+
+  .header-right {
+    font-family: var(--sans);
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  /* ── Gallery grid ── */
+  main {
+    padding: 2.5rem 3rem 5rem;
+  }
+
+  .grid {
+    columns: 3;
+    column-gap: 1.25rem;
+  }
+
+  @media (max-width: 900px) {
+    .grid { columns: 2; }
+    header { padding: 3rem 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
+    main { padding: 2rem 2rem 4rem; }
+  }
+  @media (max-width: 560px) {
+    .grid { columns: 1; }
+    header { padding: 2rem 1.25rem 1.25rem; }
+    main { padding: 1.5rem 1.25rem 3rem; }
+    h1 { font-size: 2rem; }
+  }
+
+  .photo-item {
+    break-inside: avoid;
+    margin-bottom: 1.25rem;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+  }
+
+  .photo-item img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+                filter 0.4s ease;
+    filter: saturate(0.95);
+  }
+
+  .photo-item:hover img {
+    transform: scale(1.025);
+    filter: saturate(1.05);
+  }
+
+  .photo-item .caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(26,26,24,0.55));
+    padding: 1.5rem 0.9rem 0.7rem;
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(247,245,240,0.85);
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+  }
+
+  .photo-item:hover .caption {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ── Lightbox ── */
+  #lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26, 26, 24, 0.96);
+    z-index: 100;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+  }
+  #lightbox.open { display: flex; }
+
+  #lightbox img {
+    max-width: 90vw;
+    max-height: 85vh;
+    object-fit: contain;
+    display: block;
+    animation: lb-in 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+  }
+
+  @keyframes lb-in {
+    from { opacity: 0; transform: scale(0.97); }
+    to   { opacity: 1; transform: scale(1); }
+  }
+
+  #lightbox-caption {
+    font-family: var(--sans);
+    font-size: 0.68rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--green-light);
+    margin-top: 1.1rem;
+  }
+
+  #lightbox-close {
+    position: fixed;
+    top: 1.5rem;
+    right: 2rem;
+    font-family: var(--sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(247,245,240,0.5);
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: color 0.2s;
+  }
+  #lightbox-close:hover { color: var(--green-light); }
+
+  #lightbox-prev, #lightbox-next {
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    font-family: var(--sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(247,245,240,0.4);
+    cursor: pointer;
+    padding: 1rem;
+    transition: color 0.2s;
+  }
+  #lightbox-prev { left: 1.5rem; }
+  #lightbox-next { right: 1.5rem; }
+  #lightbox-prev:hover, #lightbox-next:hover { color: var(--green-light); }
+
+  /* ── Footer ── */
+  footer {
+    border-top: 1px solid var(--green);
+    padding: 1.25rem 3rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  footer span {
+    font-family: var(--sans);
+    font-size: 0.65rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+  .green-rule {
+    width: 24px;
+    height: 2px;
+    background: var(--green);
+    display: inline-block;
+  }
+
+  /* ── Page fade in ── */
+  body { animation: fade 0.6s ease; }
+  @keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <p class="eyebrow">Photographs</p>
+    <h1>a butter week<br>in <em>spain</em></h1>
+  </div>
+  <div class="header-right">
+    April 2026
+  </div>
+</header>
+
+<main>
+  <div class="grid" id="gallery">
+    <div class="photo-item" data-caption="R0004897">
+      <img src="R0004897.JPG" alt="R0004897" loading="lazy">
+      <div class="caption">R0004897</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004896">
+      <img src="R0004896.JPG" alt="R0004896" loading="lazy">
+      <div class="caption">R0004896</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004898">
+      <img src="R0004898.JPG" alt="R0004898" loading="lazy">
+      <div class="caption">R0004898</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004904">
+      <img src="R0004904.JPG" alt="R0004904" loading="lazy">
+      <div class="caption">R0004904</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004907">
+      <img src="R0004907.JPG" alt="R0004907" loading="lazy">
+      <div class="caption">R0004907</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004910">
+      <img src="R0004910.JPG" alt="R0004910" loading="lazy">
+      <div class="caption">R0004910</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004912">
+      <img src="R0004912.JPG" alt="R0004912" loading="lazy">
+      <div class="caption">R0004912</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004915">
+      <img src="R0004915.JPG" alt="R0004915" loading="lazy">
+      <div class="caption">R0004915</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004916">
+      <img src="R0004916.JPG" alt="R0004916" loading="lazy">
+      <div class="caption">R0004916</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004917">
+      <img src="R0004917.JPG" alt="R0004917" loading="lazy">
+      <div class="caption">R0004917</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004918">
+      <img src="R0004918.JPG" alt="R0004918" loading="lazy">
+      <div class="caption">R0004918</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004919">
+      <img src="R0004919.JPG" alt="R0004919" loading="lazy">
+      <div class="caption">R0004919</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004920">
+      <img src="R0004920.JPG" alt="R0004920" loading="lazy">
+      <div class="caption">R0004920</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004921">
+      <img src="R0004921.JPG" alt="R0004921" loading="lazy">
+      <div class="caption">R0004921</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004922">
+      <img src="R0004922.JPG" alt="R0004922" loading="lazy">
+      <div class="caption">R0004922</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004925">
+      <img src="R0004925.JPG" alt="R0004925" loading="lazy">
+      <div class="caption">R0004925</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004927">
+      <img src="R0004927.JPG" alt="R0004927" loading="lazy">
+      <div class="caption">R0004927</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004930">
+      <img src="R0004930.JPG" alt="R0004930" loading="lazy">
+      <div class="caption">R0004930</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004932">
+      <img src="R0004932.JPG" alt="R0004932" loading="lazy">
+      <div class="caption">R0004932</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004934">
+      <img src="R0004934.JPG" alt="R0004934" loading="lazy">
+      <div class="caption">R0004934</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004935">
+      <img src="R0004935.JPG" alt="R0004935" loading="lazy">
+      <div class="caption">R0004935</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004937">
+      <img src="R0004937.JPG" alt="R0004937" loading="lazy">
+      <div class="caption">R0004937</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004942">
+      <img src="R0004942.JPG" alt="R0004942" loading="lazy">
+      <div class="caption">R0004942</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004948">
+      <img src="R0004948.JPG" alt="R0004948" loading="lazy">
+      <div class="caption">R0004948</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004950">
+      <img src="R0004950.JPG" alt="R0004950" loading="lazy">
+      <div class="caption">R0004950</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004952">
+      <img src="R0004952.JPG" alt="R0004952" loading="lazy">
+      <div class="caption">R0004952</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004953">
+      <img src="R0004953.JPG" alt="R0004953" loading="lazy">
+      <div class="caption">R0004953</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004963">
+      <img src="R0004963.JPG" alt="R0004963" loading="lazy">
+      <div class="caption">R0004963</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004965">
+      <img src="R0004965.JPG" alt="R0004965" loading="lazy">
+      <div class="caption">R0004965</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004968">
+      <img src="R0004968.JPG" alt="R0004968" loading="lazy">
+      <div class="caption">R0004968</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004988">
+      <img src="R0004988.JPG" alt="R0004988" loading="lazy">
+      <div class="caption">R0004988</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004991">
+      <img src="R0004991.JPG" alt="R0004991" loading="lazy">
+      <div class="caption">R0004991</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004995">
+      <img src="R0004995.JPG" alt="R0004995" loading="lazy">
+      <div class="caption">R0004995</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004997">
+      <img src="R0004997.JPG" alt="R0004997" loading="lazy">
+      <div class="caption">R0004997</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004998">
+      <img src="R0004998.JPG" alt="R0004998" loading="lazy">
+      <div class="caption">R0004998</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004999">
+      <img src="R0004999.JPG" alt="R0004999" loading="lazy">
+      <div class="caption">R0004999</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005002">
+      <img src="R0005002.JPG" alt="R0005002" loading="lazy">
+      <div class="caption">R0005002</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005003">
+      <img src="R0005003.JPG" alt="R0005003" loading="lazy">
+      <div class="caption">R0005003</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005006">
+      <img src="R0005006.JPG" alt="R0005006" loading="lazy">
+      <div class="caption">R0005006</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005016">
+      <img src="R0005016.JPG" alt="R0005016" loading="lazy">
+      <div class="caption">R0005016</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005020">
+      <img src="R0005020.JPG" alt="R0005020" loading="lazy">
+      <div class="caption">R0005020</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005022">
+      <img src="R0005022.JPG" alt="R0005022" loading="lazy">
+      <div class="caption">R0005022</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005023">
+      <img src="R0005023.JPG" alt="R0005023" loading="lazy">
+      <div class="caption">R0005023</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005037">
+      <img src="R0005037.JPG" alt="R0005037" loading="lazy">
+      <div class="caption">R0005037</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005040">
+      <img src="R0005040.JPG" alt="R0005040" loading="lazy">
+      <div class="caption">R0005040</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005047">
+      <img src="R0005047.JPG" alt="R0005047" loading="lazy">
+      <div class="caption">R0005047</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005051">
+      <img src="R0005051.JPG" alt="R0005051" loading="lazy">
+      <div class="caption">R0005051</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005053">
+      <img src="R0005053.JPG" alt="R0005053" loading="lazy">
+      <div class="caption">R0005053</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005054">
+      <img src="R0005054.JPG" alt="R0005054" loading="lazy">
+      <div class="caption">R0005054</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005057">
+      <img src="R0005057.JPG" alt="R0005057" loading="lazy">
+      <div class="caption">R0005057</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005065">
+      <img src="R0005065.JPG" alt="R0005065" loading="lazy">
+      <div class="caption">R0005065</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005070">
+      <img src="R0005070.JPG" alt="R0005070" loading="lazy">
+      <div class="caption">R0005070</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005075">
+      <img src="R0005075.JPG" alt="R0005075" loading="lazy">
+      <div class="caption">R0005075</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005077">
+      <img src="R0005077.JPG" alt="R0005077" loading="lazy">
+      <div class="caption">R0005077</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005081">
+      <img src="R0005081.JPG" alt="R0005081" loading="lazy">
+      <div class="caption">R0005081</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005086">
+      <img src="R0005086.JPG" alt="R0005086" loading="lazy">
+      <div class="caption">R0005086</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005088">
+      <img src="R0005088.JPG" alt="R0005088" loading="lazy">
+      <div class="caption">R0005088</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005089">
+      <img src="R0005089.JPG" alt="R0005089" loading="lazy">
+      <div class="caption">R0005089</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005090">
+      <img src="R0005090.JPG" alt="R0005090" loading="lazy">
+      <div class="caption">R0005090</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005091">
+      <img src="R0005091.JPG" alt="R0005091" loading="lazy">
+      <div class="caption">R0005091</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005098">
+      <img src="R0005098.JPG" alt="R0005098" loading="lazy">
+      <div class="caption">R0005098</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005099">
+      <img src="R0005099.JPG" alt="R0005099" loading="lazy">
+      <div class="caption">R0005099</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005100">
+      <img src="R0005100.JPG" alt="R0005100" loading="lazy">
+      <div class="caption">R0005100</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005102">
+      <img src="R0005102.JPG" alt="R0005102" loading="lazy">
+      <div class="caption">R0005102</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005104">
+      <img src="R0005104.JPG" alt="R0005104" loading="lazy">
+      <div class="caption">R0005104</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005107">
+      <img src="R0005107.JPG" alt="R0005107" loading="lazy">
+      <div class="caption">R0005107</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005109">
+      <img src="R0005109.JPG" alt="R0005109" loading="lazy">
+      <div class="caption">R0005109</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005111">
+      <img src="R0005111.JPG" alt="R0005111" loading="lazy">
+      <div class="caption">R0005111</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005117">
+      <img src="R0005117.JPG" alt="R0005117" loading="lazy">
+      <div class="caption">R0005117</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005120">
+      <img src="R0005120.JPG" alt="R0005120" loading="lazy">
+      <div class="caption">R0005120</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005122">
+      <img src="R0005122.JPG" alt="R0005122" loading="lazy">
+      <div class="caption">R0005122</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005124">
+      <img src="R0005124.JPG" alt="R0005124" loading="lazy">
+      <div class="caption">R0005124</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005126">
+      <img src="R0005126.JPG" alt="R0005126" loading="lazy">
+      <div class="caption">R0005126</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005128">
+      <img src="R0005128.JPG" alt="R0005128" loading="lazy">
+      <div class="caption">R0005128</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005130">
+      <img src="R0005130.JPG" alt="R0005130" loading="lazy">
+      <div class="caption">R0005130</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005133">
+      <img src="R0005133.JPG" alt="R0005133" loading="lazy">
+      <div class="caption">R0005133</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005137">
+      <img src="R0005137.JPG" alt="R0005137" loading="lazy">
+      <div class="caption">R0005137</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005138">
+      <img src="R0005138.JPG" alt="R0005138" loading="lazy">
+      <div class="caption">R0005138</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005143">
+      <img src="R0005143.JPG" alt="R0005143" loading="lazy">
+      <div class="caption">R0005143</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005149">
+      <img src="R0005149.JPG" alt="R0005149" loading="lazy">
+      <div class="caption">R0005149</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005150">
+      <img src="R0005150.JPG" alt="R0005150" loading="lazy">
+      <div class="caption">R0005150</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005155">
+      <img src="R0005155.JPG" alt="R0005155" loading="lazy">
+      <div class="caption">R0005155</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005162">
+      <img src="R0005162.JPG" alt="R0005162" loading="lazy">
+      <div class="caption">R0005162</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005164">
+      <img src="R0005164.JPG" alt="R0005164" loading="lazy">
+      <div class="caption">R0005164</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005169">
+      <img src="R0005169.JPG" alt="R0005169" loading="lazy">
+      <div class="caption">R0005169</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005170">
+      <img src="R0005170.JPG" alt="R0005170" loading="lazy">
+      <div class="caption">R0005170</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005172">
+      <img src="R0005172.JPG" alt="R0005172" loading="lazy">
+      <div class="caption">R0005172</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005173">
+      <img src="R0005173.JPG" alt="R0005173" loading="lazy">
+      <div class="caption">R0005173</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005177">
+      <img src="R0005177.JPG" alt="R0005177" loading="lazy">
+      <div class="caption">R0005177</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005181">
+      <img src="R0005181.JPG" alt="R0005181" loading="lazy">
+      <div class="caption">R0005181</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005186">
+      <img src="R0005186.JPG" alt="R0005186" loading="lazy">
+      <div class="caption">R0005186</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005189">
+      <img src="R0005189.JPG" alt="R0005189" loading="lazy">
+      <div class="caption">R0005189</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0005190">
+      <img src="R0005190.JPG" alt="R0005190" loading="lazy">
+      <div class="caption">R0005190</div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <span>a butter week in spain &mdash; april 2026</span>
+  <span class="green-rule"></span>
+  <span>photographs</span>
+</footer>
+
+<!-- Lightbox -->
+<div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo lightbox">
+  <button id="lightbox-close" aria-label="Close">close &times;</button>
+  <button id="lightbox-prev" aria-label="Previous photo">&#8592; prev</button>
+  <img id="lightbox-img" src="" alt="">
+  <p id="lightbox-caption"></p>
+  <button id="lightbox-next" aria-label="Next photo">next &#8594;</button>
+</div>
+
+<script>
+  const items = Array.from(document.querySelectorAll('.photo-item'));
+  const lb = document.getElementById('lightbox');
+  const lbImg = document.getElementById('lightbox-img');
+  const lbCap = document.getElementById('lightbox-caption');
+  let current = 0;
+
+  function openLightbox(index) {
+    current = index;
+    const item = items[index];
+    lbImg.src = item.querySelector('img').src;
+    lbImg.alt = item.querySelector('img').alt;
+    lbCap.textContent = item.dataset.caption || '';
+    lb.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    lb.classList.remove('open');
+    document.body.style.overflow = '';
+    lbImg.src = '';
+  }
+
+  function showNext() {
+    openLightbox((current + 1) % items.length);
+  }
+
+  function showPrev() {
+    openLightbox((current - 1 + items.length) % items.length);
+  }
+
+  items.forEach((item, i) => {
+    item.addEventListener('click', () => openLightbox(i));
+  });
+
+  document.getElementById('lightbox-close').addEventListener('click', closeLightbox);
+  document.getElementById('lightbox-next').addEventListener('click', showNext);
+  document.getElementById('lightbox-prev').addEventListener('click', showPrev);
+
+  lb.addEventListener('click', e => {
+    if (e.target === lb) closeLightbox();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (!lb.classList.contains('open')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') showNext();
+    if (e.key === 'ArrowLeft') showPrev();
+  });
+</script>
+
+</body>
+</html>
