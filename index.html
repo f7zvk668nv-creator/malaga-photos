@@ -83,25 +83,23 @@
   }
 
   .grid {
-    columns: 3;
-    column-gap: 1.25rem;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
   }
 
   @media (max-width: 900px) {
-    .grid { columns: 2; }
+    .grid { grid-template-columns: 1fr; }
     header { padding: 3rem 2rem 1.5rem; flex-direction: column; align-items: flex-start; }
     main { padding: 2rem 2rem 4rem; }
   }
   @media (max-width: 560px) {
-    .grid { columns: 1; }
     header { padding: 2rem 1.25rem 1.25rem; }
     main { padding: 1.5rem 1.25rem 3rem; }
     h1 { font-size: 2rem; }
   }
 
   .photo-item {
-    break-inside: avoid;
-    margin-bottom: 1.25rem;
     position: relative;
     overflow: hidden;
     cursor: pointer;
@@ -254,14 +252,14 @@
 
 <main>
   <div class="grid" id="gallery">
-    <div class="photo-item" data-caption="R0004897">
-      <img src="R0004897.JPG" alt="R0004897" loading="lazy">
-      <div class="caption">R0004897</div>
-    </div>
-
     <div class="photo-item" data-caption="R0004896">
       <img src="R0004896.JPG" alt="R0004896" loading="lazy">
       <div class="caption">R0004896</div>
+    </div>
+
+    <div class="photo-item" data-caption="R0004897">
+      <img src="R0004897.JPG" alt="R0004897" loading="lazy">
+      <div class="caption">R0004897</div>
     </div>
 
     <div class="photo-item" data-caption="R0004898">
@@ -719,7 +717,7 @@
       <div class="caption">R0005190</div>
     </div>
 
-  </div>
+    </div>
 </main>
 
 <footer>
